@@ -14,6 +14,7 @@ using Microsoft.eShopWeb.Infrastructure.Data;
 using Microsoft.eShopWeb.Infrastructure.Identity;
 using Microsoft.eShopWeb.Web;
 using Microsoft.eShopWeb.Web.Configuration;
+using Microsoft.eShopWeb.Web.ConfigurationModels;
 using Microsoft.eShopWeb.Web.HealthChecks;
 using Microsoft.eShopWeb.Web.Interfaces;
 using Microsoft.eShopWeb.Web.Services;
@@ -101,6 +102,11 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 var serviceBusConnectionString = builder.Configuration.GetConnectionString("ServiceBus");
 builder.Services.AddAzureClients(b => b.AddServiceBusClient(serviceBusConnectionString));
 builder.Services.AddScoped<IItemReservator, ItemReservator>();
+
+// DeliveryService
+var deliveryServiceConfigurationSection = builder.Configuration.GetRequiredSection(DeliveryServiceConfiguration.ConfigPath);
+builder.Services.Configure<DeliveryServiceConfiguration>(deliveryServiceConfigurationSection);
+builder.Services.AddScoped<IDeliveryService, DeliveryService>();
 
 var app = builder.Build();
 
