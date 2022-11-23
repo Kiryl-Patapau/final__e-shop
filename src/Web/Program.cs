@@ -15,6 +15,9 @@ using Microsoft.eShopWeb.Infrastructure.Identity;
 using Microsoft.eShopWeb.Web;
 using Microsoft.eShopWeb.Web.Configuration;
 using Microsoft.eShopWeb.Web.HealthChecks;
+using Microsoft.eShopWeb.Web.Interfaces;
+using Microsoft.eShopWeb.Web.Services;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -93,6 +96,11 @@ builder.Services.AddScoped<HttpService>();
 builder.Services.AddBlazorServices();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+// OrderReservator
+var serviceBusConnectionString = builder.Configuration.GetConnectionString("ServiceBus");
+builder.Services.AddAzureClients(b => b.AddServiceBusClient(serviceBusConnectionString));
+builder.Services.AddScoped<IItemReservator, ItemReservator>();
 
 var app = builder.Build();
 
